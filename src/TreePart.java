@@ -1,3 +1,4 @@
+import apple.laf.JRSUIUtils;
 import util.TreeNode;
 
 import java.util.*;
@@ -35,6 +36,7 @@ public class TreePart {
 
     /**
      * BM24
+     *
      * @param root
      * @return
      */
@@ -306,19 +308,20 @@ public class TreePart {
      * BM32 合并二叉树
      * 已知两颗二叉树，将它们合并成一颗二叉树。
      * 合并规则是：都存在的结点，就将结点值加起来，否则空的位置就由另一个树的结点来代替
+     *
      * @param t1
      * @param t2
      * @return
      */
-    public TreeNode mergeTrees (TreeNode t1, TreeNode t2) {
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
         // write code here
-        if(t1 == null){
+        if (t1 == null) {
             return t2;
         }
-        if(t2 == null){
+        if (t2 == null) {
             return t1;
         }
-        TreeNode node = new TreeNode(t1.val+t2.val);
+        TreeNode node = new TreeNode(t1.val + t2.val);
         node.left = mergeTrees(t1, t2);
         node.right = mergeTrees(t1, t2);
         return node;
@@ -328,15 +331,16 @@ public class TreePart {
     /**
      * BM33 二叉树的镜像
      * 操作给定的二叉树，将其变换为源二叉树的镜像。
+     *
      * @param pRoot
      * @return
      */
-    public TreeNode Mirror (TreeNode pRoot) {
+    public TreeNode Mirror(TreeNode pRoot) {
         // write code here
-        if(pRoot == null){
+        if (pRoot == null) {
             return null;
         }
-        TreeNode node= new TreeNode(pRoot.val);
+        TreeNode node = new TreeNode(pRoot.val);
         node.left = Mirror(node.right);
         node.right = Mirror(node.left);
         return node;
@@ -346,15 +350,16 @@ public class TreePart {
     /**
      * BM34 判断是不是二叉搜索树
      * 给定一个二叉树根节点，请你判断这棵树是不是二叉搜索树。
+     *
      * @param root
      * @return
      */
-    public boolean isValidBST (TreeNode root) {
+    public boolean isValidBST(TreeNode root) {
         // write code here
         ArrayList<Integer> list = new ArrayList<>();
         inOrder(root, list);
-        for(int i =0;i<list.size()-2; i++){
-            if(list.get(i) > list.get(i+1)){
+        for (int i = 0; i < list.size() - 2; i++) {
+            if (list.get(i) > list.get(i + 1)) {
                 return false;
             }
         }
@@ -362,8 +367,8 @@ public class TreePart {
 
     }
 
-    public void inOrder(TreeNode root, ArrayList<Integer> arrayList){
-        if(root == null){
+    public void inOrder(TreeNode root, ArrayList<Integer> arrayList) {
+        if (root == null) {
             return;
         }
         inOrder(root.left, arrayList);
@@ -379,21 +384,21 @@ public class TreePart {
      * @param root
      * @return
      */
-    public boolean isCompleteTree (TreeNode root) {
+    public boolean isCompleteTree(TreeNode root) {
         // write code here
-        if(root == null){
+        if (root == null) {
             return true;
         }
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         boolean notComplete = false;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             TreeNode tmp = queue.poll();
-            if(tmp == null){
+            if (tmp == null) {
                 notComplete = true;
                 continue;
             }
-            if(notComplete){
+            if (notComplete) {
                 return false;
             }
             queue.offer(tmp.left);
@@ -405,6 +410,7 @@ public class TreePart {
     /**
      * BM36判断是不是平衡二叉树
      * 左右高度差不超过1
+     *
      * @param root
      * @return
      */
@@ -412,25 +418,67 @@ public class TreePart {
         deep(root);
         return isBalanced;
     }
+
     boolean isBalanced = true;
 
-    public int deep(TreeNode root){
-        if(root == null){
+    public int deep(TreeNode root) {
+        if (root == null) {
             return 0;
         }
         int l = deep(root.left);
-        if(l == -1){
+        if (l == -1) {
             return -1;
         }
         int r = deep(root.right);
-        if(r == -1){
+        if (r == -1) {
             return -1;
         }
-        if(Math.abs(l -r)>1){
+        if (Math.abs(l - r) > 1) {
             isBalanced = false;
-            return  -1;
+            return -1;
         }
-        return Math.max(l, r)+1;
+        return Math.max(l, r) + 1;
+    }
+
+    /**
+     * BM37 二叉搜索树的最近公共祖先
+     *
+     * @param root
+     * @return
+     */
+    public int lowestCommonAncestor(TreeNode root, int p, int q) {
+        // write code here
+        ArrayList<Integer> list1 = getPath(root, p);
+        ArrayList<Integer> list2 = getPath(root, q);
+        int res = 0;
+        for (int i = 0; i < list1.size() && i < list2.size(); i++) {
+            int x = list1.get(i);
+            int y = list2.get(i);
+            if (x == y) {
+                //记录每一个相同祖先节点
+                res = list1.get(i);
+            } else {
+                break;
+            }
+        }
+        return res;
+    }
+
+    public ArrayList<Integer> getPath(TreeNode root, int target) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        TreeNode temp = root;
+        while (temp.val != target) {
+            arrayList.add(temp.val);
+            //小于目标值，往右走
+            if (temp.val < target) {
+                temp = temp.right;
+            } else {
+                temp = temp.left;
+            }
+
+        }
+        arrayList.add(temp.val);
+        return arrayList;
     }
 
 }
