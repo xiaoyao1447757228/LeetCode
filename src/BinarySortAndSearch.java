@@ -79,14 +79,14 @@ public class BinarySortAndSearch {
     }
 
 
-    /**
-     * BM22 比较版本号
-     * @param version1
-     * @param version2
-     * @return
-     */
-    public int compare (String version1, String version2) {
-        // write code here
-    }
+//    /**
+//     * BM22 比较版本号
+//     * @param version1
+//     * @param version2
+//     * @return
+//     */
+//    public int compare (String version1, String version2) {
+//        // write code here
+//    }
 
 }

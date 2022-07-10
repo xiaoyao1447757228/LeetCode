@@ -56,6 +56,29 @@ public class ListPart {
     }
 
 
+    /**
+     * BM2 链表内指定区间反转
+     * 将一个节点数为 size 链表 m 位置到 n 位置之间的区间反转
+     * @param head
+     * @return
+     */
+    public static ListNode reverseBetween(ListNode head, int left, int right) {
+        ListNode node = new ListNode(-1), cur, temp;
+        node.next = head;
+        ListNode pre = node;
+        for (int i = 0; i < left - 1; i++) {
+            pre = pre.next;
+        }
+        cur = pre.next;
+
+        for (int i = 0; i < right - left; i++) {
+            temp = cur.next;
+            cur.next = temp.next;
+            temp.next = pre.next;
+            pre.next = temp;
+        }
+        return node.next;
+    }
 
     /**
      * BM14 链表的奇偶重排
@@ -306,23 +329,7 @@ public class ListPart {
 
     }
 
-    public static ListNode reverseBetween(ListNode head, int left, int right) {
-        ListNode node = new ListNode(-1), cur, temp;
-        node.next = head;
-        ListNode pre = node;
-        for (int i = 0; i < left - 1; i++) {
-            pre = pre.next;
-        }
-        cur = pre.next;
 
-        for (int i = 0; i < right - left; i++) {
-            temp = cur.next;
-            cur.next = temp.next;
-            temp.next = pre.next;
-            pre.next = temp;
-        }
-        return node.next;
-    }
 
     /**
      * 返回倒数第k个节点

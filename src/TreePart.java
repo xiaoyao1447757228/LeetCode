@@ -5,6 +5,12 @@ import java.util.*;
 
 public class TreePart {
 
+    public static void main(String[] args) {
+        int[] pre = new int[]{1,2,4,5,6,3};
+        int[] vin = new int[]{5,4,6,2,1,3};
+        solve(pre, vin);
+    }
+
 
     /**
      * BM23 二叉树的前序遍历
@@ -479,6 +485,161 @@ public class TreePart {
         }
         arrayList.add(temp.val);
         return arrayList;
+    }
+
+
+    public int lowestCommonAncestor2(TreeNode root, int p, int q) {
+        // write code here
+        return CommonAncestor(root, p, q).val;
+    }
+
+    public TreeNode CommonAncestor(TreeNode root, int p, int q) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val == p || root.val == q) {
+            return root;
+        }
+        //
+        if (root.val > p && root.val > q) {
+            return CommonAncestor(root.left, p, q);
+        } else if (root.val < p && root.val < q) {
+            return CommonAncestor(root.right, p, q);
+        }
+        return root;
+    }
+
+    /**
+     * BM38 在二叉树中找到两个节点的最近公共祖先
+     *
+     * @param root
+     * @param o1
+     * @param o2
+     * @return
+     */
+    public int lowestCommonAncestor3(TreeNode root, int o1, int o2) {
+        // write code here
+        return dfs(root, o1, o2).val;
+    }
+
+    public TreeNode dfs(TreeNode root, int o1, int o2) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val == o1 || root.val == o2) {
+            return root;
+        }
+        TreeNode left = dfs(root.left, o1, o2);
+        TreeNode right = dfs(root.right, o1, o2);
+        if (left == null) {
+            return right;
+        }
+        if (right == null) {
+            return left;
+        }
+        return root;
+    }
+
+    /**
+     * BM39 序列化二叉树
+     * @param root
+     * @return
+     */
+    String Serialize(TreeNode root) {
+        if (root == null) {
+            return "#";
+        } else {
+            return root.val + "," + Serialize(root.left) + "," + Serialize(root.right);
+        }
+    }
+    int index = -1;
+    TreeNode Deserialize(String str) {
+        String[] arr = str.split(",");
+        index++;
+        TreeNode node = null;
+        if (index > arr.length) {
+            return null;
+        }
+        if (!arr[index].equals("#")) {
+            node = new TreeNode(Integer.parseInt(arr[index]));
+            node.left = Deserialize(str);
+            node.right = Deserialize(str);
+        }
+        return node;
+
+    }
+
+    /**
+     * BM40 重建二叉树
+     * @param pre
+     * @param vin
+     * @return
+     */
+    public TreeNode reConstructBinaryTree(int [] pre,int [] vin) {
+        if(pre.length == 0 || vin.length == 0){
+            return null;
+        }
+        TreeNode node = new TreeNode(pre[0]);
+        for(int i =0;i<pre.length;i++){
+            if(pre[0] == vin[i]){
+                node.left = reConstructBinaryTree(Arrays.copyOfRange(pre, 1, i+1),
+                        Arrays.copyOfRange(vin,0, i));
+                node.right = reConstructBinaryTree(Arrays.copyOfRange(pre, i+1,  pre.length),
+                        Arrays.copyOfRange(vin,i+1, vin.length));
+            }
+        }
+       return node;
+    }
+
+    /**
+     * BM41 输出二叉树的右视图
+     * @param xianxu
+     * @param zhongxu
+     * @return
+     */
+    public static int[] solve (int[] xianxu, int[] zhongxu) {
+        // write code here
+        //先重建树
+        TreeNode node = rebuild(xianxu, zhongxu);
+        //层序遍历树
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.add(node);
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            arrayList.add(queue.getLast().val);
+            for(int i =0; i< size;i++){
+                 TreeNode temp =  queue.poll();
+                 if(temp.left != null){
+                     queue.add(temp.left);
+                 }
+                 if(temp.right!=null) {
+                     queue.add(temp.right);
+                 }
+            }
+        }
+        int[] arr = new int[arrayList.size()];
+        for(int i = 0;i< arrayList.size();i++){
+            arr[i] = arrayList.get(i);
+        }
+        return arr;
+    }
+
+
+    public static TreeNode rebuild(int[] xianxu, int[] zhongxu){
+        if (xianxu.length == 0 || zhongxu.length == 0) {
+            return null;
+        }
+        TreeNode node = new TreeNode(xianxu[0]);
+        for (int i = 0; i < xianxu.length; i++) {
+            if (xianxu[0] == zhongxu[i]) {
+                node.left = rebuild(Arrays.copyOfRange(xianxu, 1, i + 1),
+                        Arrays.copyOfRange(zhongxu, 0, i));
+                node.right = rebuild(Arrays.copyOfRange(xianxu, i + 1, xianxu.length),
+                        Arrays.copyOfRange(zhongxu, i + 1, zhongxu.length));
+            }
+        }
+        return node;
     }
 
 }
