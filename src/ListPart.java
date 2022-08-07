@@ -5,6 +5,7 @@ import util.ListNode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ListPart {
 
@@ -52,7 +53,7 @@ public class ListPart {
         node2.next = node3;
         node3.next = node4;
         node4.next = null;
-        isPail(node1);
+         isPail(node1);
     }
 
 
@@ -221,6 +222,35 @@ public class ListPart {
     }
 
     /**
+     * BM4 合并两个有序链表
+     *
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public static ListNode Merge(ListNode list1, ListNode list2) {
+        ListNode vHead = new ListNode(-1);
+        ListNode tmpHead = vHead;
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                tmpHead.next = list1;
+                list1 = list1.next;
+            } else {
+                tmpHead.next = list2;
+                list2 = list2.next;
+            }
+            tmpHead = tmpHead.next;
+        }
+        if (list1 == null) {
+            tmpHead.next = list2;
+        } else {
+            tmpHead.next = list1;
+        }
+        return vHead.next;
+    }
+
+
+    /**
      * 合并k个有序链表
      * 分治思想
      *
@@ -271,7 +301,76 @@ public class ListPart {
 
 
     /**
-     * k个一组反转链表
+     * 判断链表是否有环
+     * @param head
+     * @return
+     */
+    public boolean hasCycle(ListNode head) {
+        //先判断链表为空的情况
+        if (head == null)
+            return false;
+        //快慢双指针
+        ListNode fast = head;
+        ListNode slow = head;
+        //如果没环快指针会先到链表尾
+        while (fast != null && fast.next != null) {
+            //快指针移动两步
+            fast = fast.next.next;
+            //慢指针移动一步
+            slow = slow.next;
+            //相遇则有环
+            if (fast == slow)
+                return true;
+        }
+        //到末尾则没有环
+        return false;
+    }
+
+
+    public static ListNode EntryNodeOfLoop2(ListNode pHead) {
+        HashSet<ListNode> hashSet = new HashSet<>();
+        while(pHead != null){
+            if(hashSet.contains(pHead)){
+                return pHead;
+            } else {
+                hashSet.add(pHead);
+            }
+            pHead = pHead.next;
+        }
+        return null;
+    }
+
+
+    /**
+     * 找环的入口节点
+     * @param pHead
+     * @return
+     */
+    public ListNode EntryNodeOfLoop(ListNode pHead) {
+        if (pHead == null || pHead.next == null) {
+            return null;
+        }
+        ListNode fast = pHead.next.next, slow = pHead.next;
+        while (fast != null && fast.next != null) {
+            if (fast == slow) {
+                break;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if(slow == null) return null;
+        fast = pHead;
+        //找到交点后，快指针从头开始，慢指针从交点开始，同步走，会在入口相遇
+        while(fast != slow){
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return fast;
+    }
+
+
+    /**
+     * BM3 链表中的节点每k个一组翻转
      *
      * @param head
      * @param k
